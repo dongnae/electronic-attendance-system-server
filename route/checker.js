@@ -20,7 +20,13 @@ router.use(async (req, res, next) => {
 	next();
 });
 
-router.post("/verify", async (req, res, next) => {
+router.get("/check", (req, res) => {
+	res.end(JSON.stringify({
+		result: 0,
+	}));
+});
+
+router.post("/verify", async (req, res) => {
 	let {jwt} = req.body;
 	if (typeof jwt !== "string") {
 		res.status(500).end(JSON.stringify({
