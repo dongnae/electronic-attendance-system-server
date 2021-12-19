@@ -43,8 +43,16 @@ router.post("/verify", async (req, res) => {
 	}
 	let result = await student.pushAttendance(num);
 	if (result < 0) res.status(500);
+	let result_data = undefined;
+	if (result === 0) {
+		result_data = {
+			num,
+			name: (await student.getStudent(num)).name,
+		};
+	}
 	res.end(JSON.stringify({
 		result,
+		result_data,
 	}));
 });
 
