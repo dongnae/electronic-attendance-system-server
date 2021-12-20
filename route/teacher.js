@@ -26,13 +26,21 @@ router.get("/check", (req, res) => {
 });
 
 router.get("/get", async (req, res) => {
+    let result_data = await Promise.all((await db.collection("students").find({}).toArray())
+        .map(async ({num, name}) => {
+            let ret = {num, name};
+            let time = await db.collection("tables").findOne({
+                num,
+                time: {
+                    $gte: (new Date()).setHours(0, 0, 0, 0)
+                }
+            });
+            if (time !== null) ret.time = time.time;
+            return ret;
+        }));
     res.end(JSON.stringify({
         result: 0,
-        result_data: await db.collection("tables").find({
-            time: {
-                $gte: (new Date()).setHours(0, 0, 0, 0)
-            }
-        }).toArray(),
+        result_data
     }));
 });
 
